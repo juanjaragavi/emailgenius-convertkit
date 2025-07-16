@@ -8,7 +8,7 @@
     "parameters": {
         "aspectRatio": "16:9",
         "sampleCount": 1,
-        "negativePrompt": "Examples include disfigurements, six fingers per hand, low realism, lack of coherence, low-resolution images, grainy textures, lack of detail, abnormal appearances, illegible text, and grammatical and syntax errors. There are also non-coherent situations, distorted human and/or animal bodies, figures, and objects; devices with more than one screen; screens popping out of devices, such as laptops and mobile phones; and people belonging to only one ethnicity",
+        "negativePrompt": "Disfigurements, six fingers per hand, low realism, lack of coherence, low-resolution images, grainy textures, lack of detail, abnormal appearances, illegible text, and grammatical and syntax errors, non-coherent situations, distorted human and/or animal bodies, figures, and objects; devices with more than one screen; screens popping out of devices, such as laptops and mobile phones; and people belonging to only one ethnicity.",
         "enhancePrompt": false,
         "personGeneration": "allow_all",
         "safetySetting": "block_few",
