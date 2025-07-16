@@ -720,8 +720,7 @@ export default function Home() {
                 </h2>
                 <div className="flex items-center space-x-2">
                   <span className="text-xs text-gray-500">
-                    💡 Each field has its own copy button with Markdown
-                    preservation
+                    💡 Press &apos;Copy&apos; to copy each field output.
                   </span>
                   <button
                     onClick={copyToClipboard}
