@@ -9,6 +9,23 @@ export default function Home() {
   const [progress, setProgress] = useState("");
   const [notification, setNotification] = useState("");
 
+  // Clear all data with confirmation
+  const clearAllData = useCallback(() => {
+    const confirmed = window.confirm(
+      "Are you sure you want to clear all data? This action cannot be undone."
+    );
+
+    if (confirmed) {
+      setUrl("");
+      setResponse("");
+      setProgress("");
+      setNotification("All data cleared successfully!");
+
+      // Clear the notification after 3 seconds
+      setTimeout(() => setNotification(""), 3000);
+    }
+  }, []);
+
   const copyToClipboard = useCallback(async () => {
     try {
       // Check if there's any selected text
@@ -272,7 +289,7 @@ export default function Home() {
   }) => (
     <button
       onClick={() => copyFieldWithValidation(content, fieldName)}
-      className="inline-flex items-center px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded border border-blue-300 transition-colors duration-200"
+      className="inline-flex items-center px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded border border-blue-300 transition-colors duration-200 cursor-pointer"
       title={`Copy ${fieldName} with Markdown formatting and validation`}
     >
       <svg
@@ -691,7 +708,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors duration-200"
               tabIndex={2}
             >
               {loading ? "Generating Email..." : "Generate Email Campaign"}
@@ -719,13 +736,18 @@ export default function Home() {
                   Generated ConvertKIT Email Campaign:
                 </h2>
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs text-gray-500">
-                    💡 Press &apos;Copy&apos; to copy each field output.
-                  </span>
+                  <button
+                    onClick={clearAllData}
+                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                    tabIndex={3}
+                    title="Clear all generated content and input fields"
+                  >
+                    Clear
+                  </button>
                   <button
                     onClick={copyToClipboard}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer"
-                    tabIndex={3}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                    tabIndex={4}
                     title="Copy selected text or full content with Markdown formatting"
                   >
                     Copy All
