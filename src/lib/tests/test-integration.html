@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailGenius - ConvertKIT Integration Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">EmailGenius - ConvertKIT Integration Test</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Test Instructions</h2>
+            <ol class="text-gray-700 space-y-2 list-decimal list-inside">
+                <li>Open <a href="http://localhost:3000" class="text-blue-600 underline">http://localhost:3000</a> in
+                    another tab</li>
+                <li>Enter a financial product URL (e.g., <code
+                        class="bg-gray-100 px-2 py-1 rounded text-sm">https://us.topfinanzas.com/financial-solutions/capital-one-quicksilver-student-credit-card-requirements-application</code>)
+                </li>
+                <li>Click "Generate Email Campaign"</li>
+                <li>Wait for the AI to generate the content</li>
+                <li>Click any of the individual copy buttons</li>
+                <li>Verify the notification shows ConvertKIT guidance</li>
+                <li>Paste the content into a text editor to verify Markdown formatting is preserved</li>
+            </ol>
+        </div>
+
+        <div class="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-6">
+            <h3 class="text-lg font-semibold text-orange-800 mb-3">Expected Behavior</h3>
+            <ul class="text-orange-700 space-y-2 list-disc list-inside">
+                <li>Copy buttons should have blue styling (not gray)</li>
+                <li>Notification should mention ConvertKIT and "Yes, format" guidance</li>
+                <li>Copied content should preserve <strong>**bold text**</strong> and line breaks</li>
+                <li>Email body should maintain proper paragraph structure</li>
+                <li>Department signatures should be properly formatted with **bold**</li>
+            </ul>
+        </div>
+
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-green-800 mb-3">Sample Expected Output</h3>
+            <div class="bg-white p-4 rounded-lg border font-mono text-sm">
+                <div class="text-gray-600 mb-2">Email Body Example:</div>
+                <pre class="whitespace-pre-wrap text-gray-800">Hi {{ subscriber.first_name }},
+
+This is a critical update regarding your recent submission. Our system indicates a **final verification step** is required to process your account.
+
+To ensure your eligibility and prevent any delays, please access your profile to confirm all details. **Immediate action is advised.**
+
+Your timely response will allow us to proceed with the final stages.
+
+**The Account Review Department**
+Cardholder Services</pre>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

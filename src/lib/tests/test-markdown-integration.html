@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmailGenius - ConvertKIT Markdown Integration Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .markdown-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .markdown-preview strong {
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .test-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .test-pass {
+            background-color: #10b981;
+        }
+
+        .test-fail {
+            background-color: #ef4444;
+        }
+
+        .test-pending {
+            background-color: #f59e0b;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">
+                EmailGenius - ConvertKIT Markdown Integration Test Suite
+            </h1>
+            <p class="text-gray-600 mb-4">
+                Comprehensive testing guide for Markdown formatting and ConvertKIT integration
+            </p>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h3 class="font-semibold text-blue-800 mb-2">🚀 Quick Test Instructions</h3>
+                <ol class="text-blue-700 space-y-1 list-decimal list-inside text-sm">
+                    <li>Open <a href="http://localhost:3000"
+                            class="text-blue-600 underline font-medium">http://localhost:3000</a> in a new tab</li>
+                    <li>Enter this test URL: <code
+                            class="bg-blue-100 px-2 py-1 rounded text-xs">https://us.topfinanzas.com/financial-solutions/capital-one-quicksilver-student-credit-card-requirements-application</code>
+                    </li>
+                    <li>Click "Generate Email Campaign" and wait for completion</li>
+                    <li>Test each copy button and verify the results below</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Test Checklist -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">✅ Test Checklist</h2>
+
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <span class="test-status test-pending" id="visual-test"></span>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Visual Elements</h4>
+                            <ul class="text-sm text-gray-600 list-disc list-inside ml-2 space-y-1">
+                                <li>Copy buttons have blue styling (not gray)</li>
+                                <li>ConvertKIT integration guide is visible</li>
+                                <li>Notification messages appear properly</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <span class="test-status test-pending" id="copy-test"></span>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Copy Functionality</h4>
+                            <ul class="text-sm text-gray-600 list-disc list-inside ml-2 space-y-1">
+                                <li>Each field has individual copy button</li>
+                                <li>Notification shows ConvertKIT guidance</li>
+                                <li>Copy preserves raw Markdown formatting</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <span class="test-status test-pending" id="markdown-test"></span>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Markdown Validation</h4>
+                            <ul class="text-sm text-gray-600 list-disc list-inside ml-2 space-y-1">
+                                <li>Bold text uses **double asterisks**</li>
+                                <li>Proper paragraph spacing maintained</li>
+                                <li>ConvertKIT variables: {{ subscriber.first_name }}</li>
+                                <li>Department signatures formatted with **bold**</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start">
+                        <span class="test-status test-pending" id="convertkit-test"></span>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">ConvertKIT Integration</h4>
+                            <ul class="text-sm text-gray-600 list-disc list-inside ml-2 space-y-1">
+                                <li>Paste triggers "Format as Markdown?" dialog</li>
+                                <li>Selecting "Yes, format" preserves formatting</li>
+                                <li>Content renders properly in ConvertKIT</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 class="font-semibold text-gray-800 mb-2">Test Controls</h4>
+                    <div class="space-x-2">
+                        <button onclick="markTest('visual-test', 'pass')"
+                            class="bg-green-500 text-white px-3 py-1 rounded text-sm">Visual ✓</button>
+                        <button onclick="markTest('copy-test', 'pass')"
+                            class="bg-green-500 text-white px-3 py-1 rounded text-sm">Copy ✓</button>
+                        <button onclick="markTest('markdown-test', 'pass')"
+                            class="bg-green-500 text-white px-3 py-1 rounded text-sm">Markdown ✓</button>
+                        <button onclick="markTest('convertkit-test', 'pass')"
+                            class="bg-green-500 text-white px-3 py-1 rounded text-sm">ConvertKIT ✓</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Output Preview -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">📋 Expected Output Sample</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">Email Body (Markdown):</h4>
+                        <div class="markdown-preview">
+                            <pre class="text-sm whitespace-pre-wrap">Hi {{ subscriber.first_name }},
+
+This is a critical update regarding your recent submission. Our system indicates a **final verification step** is required to process your account.
+
+To ensure your eligibility and prevent any delays, please access your profile to confirm all details. **Immediate action is advised.**
+
+Your timely response will allow us to proceed with the final stages.
+
+**The Account Review Department**
+Cardholder Services</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700 mb-2">How it renders in ConvertKIT:</h4>
+                        <div class="p-4 bg-white border border-gray-200 rounded">
+                            <p class="text-sm mb-2">Hi John,</p>
+                            <p class="text-sm mb-2">This is a critical update regarding your recent submission. Our
+                                system indicates a <strong>final verification step</strong> is required to process your
+                                account.</p>
+                            <p class="text-sm mb-2">To ensure your eligibility and prevent any delays, please access
+                                your profile to confirm all details. <strong>Immediate action is advised.</strong></p>
+                            <p class="text-sm mb-2">Your timely response will allow us to proceed with the final stages.
+                            </p>
+                            <p class="text-sm"><strong>The Account Review Department</strong><br>Cardholder Services</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Common Issues and Solutions -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">🔧 Common Issues & Solutions</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-red-600 mb-2">❌ Common Problems</h4>
+                    <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                        <li>Copy buttons show gray styling instead of blue</li>
+                        <li>Notification doesn't mention ConvertKIT</li>
+                        <li>Bold formatting stripped when copying</li>
+                        <li>Line breaks not preserved in email body</li>
+                        <li>Department signatures not bold</li>
+                        <li>ConvertKIT shows plain text instead of formatted</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-green-600 mb-2">✅ Solutions</h4>
+                    <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
+                        <li>Verify latest code is deployed</li>
+                        <li>Check browser console for errors</li>
+                        <li>Ensure "Yes, format" is selected in ConvertKIT</li>
+                        <li>Test with different content types</li>
+                        <li>Clear browser cache and reload</li>
+                        <li>Verify Markdown syntax in generated content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Test Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">🧪 Advanced Testing</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Test Different Content Types:</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-3 bg-gray-50 rounded">
+                            <h5 class="font-medium text-gray-800">Credit Cards</h5>
+                            <p class="text-xs text-gray-600">Test bold formatting in financial context</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <h5 class="font-medium text-gray-800">Loans</h5>
+                            <p class="text-xs text-gray-600">Test bullet points and lists</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded">
+                            <h5 class="font-medium text-gray-800">Insurance</h5>
+                            <p class="text-xs text-gray-600">Test department signatures</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Validation Checklist:</h4>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> Bold markers properly
+                                matched</label>
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> ConvertKIT variables
+                                used</label>
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> Line breaks
+                                preserved</label>
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> Department signatures
+                                bold</label>
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> No HTML tags in
+                                output</label>
+                            <label class="flex items-center"><input type="checkbox" class="mr-2"> Proper paragraph
+                                spacing</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function markTest(testId, status) {
+            const element = document.getElementById(testId);
+            element.className = `test-status test-${status}`;
+
+            // Add visual feedback
+            element.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Auto-scroll to top on page load
+        window.addEventListener('load', () => {
+            document.documentElement.scrollTop = 0;
+        });
+
+        // Keyboard shortcuts for quick testing
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case '1': markTest('visual-test', 'pass'); break;
+                    case '2': markTest('copy-test', 'pass'); break;
+                    case '3': markTest('markdown-test', 'pass'); break;
+                    case '4': markTest('convertkit-test', 'pass'); break;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

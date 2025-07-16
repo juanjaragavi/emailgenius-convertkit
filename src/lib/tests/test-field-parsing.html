@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Parsing Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Field Parsing Test</h1>
+            
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-3">Test Content from Screenshot:</h2>
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                    <pre id="testContent" class="text-sm text-gray-800 whitespace-pre-wrap">Invitation: Your Exclusive Access Update 🎯
+Priority Notification: Enhanced Benefits Eligibility ✅
+
+Preview Text: You've been identified for an exclusive preview. Confirm your participation today.
+
+Hi {{ subscriber.first_name }},
+
+This is an exclusive invitation regarding your eligibility for a "private beta program" designed to offer enhanced benefits. Our system indicates you've been selected for early access.
+
+To ensure your enrollment and to explore the unique advantages awaiting you, please confirm your participation at your earliest convenience. This is a limited opportunity.
+
+We look forward to your insights.
+
+Best regards,
+**The Beta Program Selection Team**
+Strategic Initiatives Division
+
+Call-to-Action Button Text: Confirm Your Access
+
+Image Concept: An ultra-realistic, high-quality 4k professional stock photography. The image should primarily feature a person of mixed gender and ethnicity, perhaps mid-20s to mid-30s, looking thoughtfully and confidently at a smartphone or tablet screen in a bright, modern cafe or a well-designed coworking space. The person's expression should convey a sense of discovery or satisfaction, as if they've just unlocked something valuable or accessed an exclusive opportunity. Subtle elements like a seat, minimal laptop or a premium coffee cup could be in the background. The lighting should be soft but clear, creating an inviting and aspirational atmosphere. Any text on visible screens should be incidental, generic, and not the primary focus, subtly hinting at "rewards" or "benefits" through abstract graphs or simple icons.</pre>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <button onclick="testParsing()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
+                    Test Parsing
+                </button>
+            </div>
+            
+            <div id="results" class="space-y-4"></div>
+        </div>
+    </div>
+    
+    <script>
+        function testParsing() {
+            const text = document.getElementById('testContent').textContent;
+            const results = document.getElementById('results');
+            
+            // Test the parsing patterns
+            const patterns = {
+                subjectLine1: [
+                    /\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
+                    /(?:^|\n)1\.\s*\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
+                    /Invitation:\s*(.+)/,
+                    /Subject\s*Line\s*1[:\s]*(.+)/i
+                ],
+                subjectLine2: [
+                    /\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
+                    /(?:^|\n)2\.\s*\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
+                    /Priority\s*Notification:\s*(.+)/,
+                    /Subject\s*Line\s*2[:\s]*(.+)/i
+                ],
+                previewText: [
+                    /\*\*Preview Text:\*\*\s*(.+)/,
+                    /(?:^|\n)3\.\s*\*\*Preview Text:\*\*\s*(.+)/,
+                    /Preview\s*Text:\s*(.+)/
+                ],
+                emailBody: [
+                    /\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
+                    /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
+                    /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n(?:5\.|.*Call-to-Action))/,
+                    /Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[,\s]*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/
+                ],
+                ctaButton: [
+                    /\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
+                    /(?:^|\n)5\.\s*\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
+                    /Call-to-Action\s*Button\s*Text:\s*(.+)/
+                ],
+                imageConcept: [
+                    /\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
+                    /(?:^|\n)6\.\s*\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
+                    /Image\s*Concept:\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/
+                ]
+            };
+            
+            results.innerHTML = '';
+            
+            for (const [fieldName, fieldPatterns] of Object.entries(patterns)) {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'bg-gray-50 p-4 rounded-lg border';
+                
+                let found = false;
+                let result = '';
+                
+                for (let i = 0; i < fieldPatterns.length; i++) {
+                    const pattern = fieldPatterns[i];
+                    const match = text.match(pattern);
+                    
+                    if (match && !found) {
+                        found = true;
+                        result = match[1].trim();
+                        fieldDiv.innerHTML = `
+                            <h3 class="font-semibold text-green-600 mb-2">${fieldName} ✓</h3>
+                            <p class="text-sm text-gray-600 mb-2">Pattern ${i + 1}: ${pattern.source}</p>
+                            <div class="bg-white p-3 rounded border">
+                                <pre class="text-sm text-gray-800 whitespace-pre-wrap">${result}</pre>
+                            </div>
+                        `;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    fieldDiv.innerHTML = `
+                        <h3 class="font-semibold text-red-600 mb-2">${fieldName} ✗</h3>
+                        <p class="text-sm text-gray-600">No pattern matched</p>
+                    `;
+                }
+                
+                results.appendChild(fieldDiv);
+            }
+        }
+    </script>
+</body>
+</html>
