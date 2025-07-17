@@ -64,7 +64,7 @@
 
 ### 5. Debugging Steps
 
-1. **Check API health**: Visit `http://localhost:3000/api/health`
+1. **Check API health**: Visit `http://localhost:3010/api/health`
 2. **Check console logs**: Open browser developer tools and check the console
 3. **Check server logs**: Look at the terminal where you ran `npm run dev`
 4. **Test with simple URL**: Try a basic URL like `https://example.com`
@@ -88,10 +88,10 @@ Run these commands to test your setup:
 
 ```bash
 # Test API health
-curl http://localhost:3000/api/health
+curl http://localhost:3010/api/health
 
 # Test basic functionality
-curl -X POST http://localhost:3000/api/generate \
+curl -X POST http://localhost:3010/api/generate \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}'
 ```
@@ -124,7 +124,7 @@ Create a `.env.local` file with these variables:
 GEMINI_API_KEY=your_gemini_api_key_here
 
 # Optional: App URL for production
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3010
 ```
 
 **Important**: Never commit `.env.local` to version control. It's already in `.gitignore`.

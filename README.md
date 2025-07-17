@@ -77,7 +77,7 @@ Add your Google Gemini AI API key to `.env.local`:
         pnpm dev
         ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3010](http://localhost:3010) in your browser
         ```bash
         npm run dev
         # or
@@ -232,7 +232,7 @@ For support, questions, or feature requests:
 
 If you're getting errors:
 
-1. **Check your API key**: Visit `http://localhost:3000/api/health`
+1. **Check your API key**: Visit `http://localhost:3010/api/health`
 2. **Verify environment**: Ensure `.env.local` has your `GEMINI_API_KEY`
 3. **Restart server**: Stop and restart with `npm run dev`
 4. **Check console**: Look for detailed error messages in browser/terminal
