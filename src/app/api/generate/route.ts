@@ -9,7 +9,10 @@ export async function POST(request: NextRequest) {
     const { url } = await request.json();
 
     if (!url) {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "La URL es requerida" },
+        { status: 400 }
+      );
     }
 
     // Create a readable stream for Server-Sent Events
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                progress: "Initializing AI model...",
+                progress: "Inicializando modelo de IA...",
               })}\n\n`
             )
           );
@@ -31,7 +34,7 @@ export async function POST(request: NextRequest) {
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
-                progress: "Analyzing URL and generating content...",
+                progress: "Analizando URL y generando contenido...",
               })}\n\n`
             )
           );
@@ -65,14 +68,14 @@ export async function POST(request: NextRequest) {
             encoder.encode(
               `data: ${JSON.stringify({
                 done: true,
-                progress: "Complete!",
+                progress: "¡Completado!",
               })}\n\n`
             )
           );
         } catch (error) {
           console.error("Streaming error:", error);
 
-          let errorMessage = "Failed to generate content";
+          let errorMessage = "Falló la generación de contenido";
           if (error instanceof Error) {
             errorMessage = error.message;
           }
@@ -101,7 +104,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error in generate API:", error);
 
-    let errorMessage = "Failed to generate content";
+    let errorMessage = "Falló la generación de contenido";
     let statusCode = 500;
 
     if (error instanceof Error) {
@@ -127,5 +130,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({ message: "Email Genius API is running" });
+  return NextResponse.json({
+    message: "La API de Email Genius está funcionando",
+  });
 }

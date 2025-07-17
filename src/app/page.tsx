@@ -836,6 +836,39 @@ export default function Home() {
             )}
           </form>
 
+          {response && (
+            <div className="mt-6">
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Campaña de Correo Electrónico de ConvertKIT Generada:
+                </h2>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={clearAllData}
+                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                    tabIndex={3}
+                    title="Borrar todo el contenido generado y los campos de entrada"
+                  >
+                    Borrar
+                  </button>
+                  <button
+                    onClick={copyToClipboard}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                    tabIndex={4}
+                    title="Copiar texto seleccionado o contenido completo con formato Markdown"
+                  >
+                    Copiar Todo
+                  </button>
+                </div>
+              </div>
+              <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
+                <div className="text-gray-800 leading-relaxed select-text cursor-text">
+                  {renderEmailFields(response)}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Image Generation Section */}
           <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
             <div className="flex items-center mb-4">
@@ -901,39 +934,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          {response && (
-            <div className="mt-6">
-              <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-semibold text-gray-800">
-                  Campaña de Correo Electrónico de ConvertKIT Generada:
-                </h2>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={clearAllData}
-                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
-                    tabIndex={3}
-                    title="Borrar todo el contenido generado y los campos de entrada"
-                  >
-                    Borrar
-                  </button>
-                  <button
-                    onClick={copyToClipboard}
-                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
-                    tabIndex={4}
-                    title="Copiar texto seleccionado o contenido completo con formato Markdown"
-                  >
-                    Copiar Todo
-                  </button>
-                </div>
-              </div>
-              <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-                <div className="text-gray-800 leading-relaxed select-text cursor-text">
-                  {renderEmailFields(response)}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
