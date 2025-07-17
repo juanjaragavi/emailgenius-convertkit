@@ -18,7 +18,7 @@ export default function Home() {
   // Clear all data with confirmation
   const clearAllData = useCallback(() => {
     const confirmed = window.confirm(
-      "Are you sure you want to clear all data? This action cannot be undone."
+      "¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer."
     );
 
     if (confirmed) {
@@ -27,7 +27,7 @@ export default function Home() {
       setProgress("");
       setImageUrl("");
       setImageProgress("");
-      setNotification("All data cleared successfully!");
+      setNotification("¡Todos los datos han sido borrados exitosamente!");
 
       // Clear the notification after 3 seconds
       setTimeout(() => setNotification(""), 3000);
@@ -44,20 +44,20 @@ export default function Home() {
         // Copy selected text - preserve original formatting
         await navigator.clipboard.writeText(selectedText);
         setNotification(
-          `Selected text copied! When pasting to ConvertKIT, click "Yes, format" to preserve Markdown.`
+          `¡Texto seleccionado copiado! Al pegar en ConvertKIT, haz clic en "Yes, format" para conservar Markdown.`
         );
       } else {
         // Copy full content as fallback - preserve original Markdown formatting
         await navigator.clipboard.writeText(response);
         setNotification(
-          'Full email campaign copied! When pasting to ConvertKIT, click "Yes, format" to preserve Markdown.'
+          '¡Campaña de correo electrónico completa copiada! Al pegar en ConvertKIT, haz clic en "Yes, format" para conservar Markdown.'
         );
       }
 
       setTimeout(() => setNotification(""), 5000); // Longer timeout for guidance message
     } catch (err) {
-      console.error("Failed to copy: ", err);
-      setNotification("Failed to copy to clipboard");
+      console.error("Falló la copia: ", err);
+      setNotification("Falló la copia al portapapeles");
       setTimeout(() => setNotification(""), 3000);
     }
   }, [response]);
@@ -70,7 +70,7 @@ export default function Home() {
       // Check for unmatched bold markers
       const boldMarkers = (content.match(/\*\*/g) || []).length;
       if (boldMarkers % 2 !== 0) {
-        issues.push("Unmatched bold markers (**) detected");
+        issues.push("Marcadores de negrita (**) sin pareja detectados");
       }
 
       // Check for proper bullet point formatting
@@ -79,7 +79,7 @@ export default function Home() {
         .filter((line) => line.trim().match(/^[\*\-\+]\s/));
       bulletLines.forEach((line) => {
         if (!line.match(/^[\*\-\+]\s+\S/)) {
-          issues.push("Improper bullet point formatting detected");
+          issues.push("Formato de viñeta incorrecto detectado");
         }
       });
 
@@ -91,7 +91,7 @@ export default function Home() {
         content.includes("[FIRSTNAME]")
       ) {
         issues.push(
-          "Non-ConvertKIT variable syntax detected - should use {{ subscriber.first_name }}"
+          "Sintaxis de variable no compatible con ConvertKIT detectada - debería usar {{ subscriber.first_name }}"
         );
       }
 
@@ -105,8 +105,8 @@ export default function Home() {
 
   // Debug parsing function to help troubleshoot format issues
   const debugParseFields = useCallback((text: string) => {
-    console.log("=== PARSING DEBUG ===");
-    console.log("Raw text:", text);
+    console.log("=== DEBUG DE ANÁLISIS ===");
+    console.log("Texto sin procesar:", text);
 
     const patterns = {
       subjectLine1: [
@@ -129,23 +129,23 @@ export default function Home() {
     };
 
     for (const [fieldName, fieldPatterns] of Object.entries(patterns)) {
-      console.log(`\n--- Testing ${fieldName} ---`);
+      console.log(`\n--- Probando ${fieldName} ---`);
       for (let i = 0; i < fieldPatterns.length; i++) {
         const pattern = fieldPatterns[i];
         const match = text.match(pattern);
         console.log(
-          `Pattern ${i + 1}: ${pattern.source} - ${
-            match ? "MATCH" : "NO MATCH"
+          `Patrón ${i + 1}: ${pattern.source} - ${
+            match ? "COINCIDENCIA" : "SIN COINCIDENCIA"
           }`
         );
         if (match) {
-          console.log(`  Result: "${match[1].trim()}"`);
+          console.log(`  Resultado: "${match[1].trim()}"`);
           break;
         }
       }
     }
 
-    console.log("=== END DEBUG ===");
+    console.log("=== FIN DEL DEBUG ===");
   }, []);
 
   // Enhanced copy function with validation and better error handling
@@ -157,12 +157,12 @@ export default function Home() {
 
         if (!validation.isValid) {
           console.warn(
-            `Markdown validation issues for ${fieldName}:`,
+            `Problemas de validación de Markdown para ${fieldName}:`,
             validation.issues
           );
           // Still copy but warn user
           setNotification(
-            `${fieldName} copied with formatting warnings. Check console for details.`
+            `${fieldName} copiado con advertencias de formato. Revisa la consola para más detalles.`
           );
         }
 
@@ -176,14 +176,16 @@ export default function Home() {
 
         if (validation.isValid) {
           setNotification(
-            `${fieldName} copied! When pasting to ConvertKIT, click "Yes, format" to preserve Markdown.`
+            `¡${fieldName} copiado! Al pegar en ConvertKIT, haz clic en "Yes, format" para conservar Markdown.`
           );
         }
 
         setTimeout(() => setNotification(""), 5000);
       } catch (err) {
-        console.error("Failed to copy: ", err);
-        setNotification("Failed to copy to clipboard - please try again");
+        console.error("Falló la copia: ", err);
+        setNotification(
+          "Falló la copia al portapapeles - por favor, inténtalo de nuevo"
+        );
         setTimeout(() => setNotification(""), 3000);
       }
     },
@@ -298,7 +300,7 @@ export default function Home() {
     <button
       onClick={() => copyFieldWithValidation(content, fieldName)}
       className="inline-flex items-center px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded border border-blue-300 transition-colors duration-200 cursor-pointer"
-      title={`Copy ${fieldName} with Markdown formatting and validation`}
+      title={`Copiar ${fieldName} con formato Markdown y validación`}
     >
       <svg
         className="w-3 h-3 mr-1"
@@ -313,7 +315,7 @@ export default function Home() {
           d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
         />
       </svg>
-      Copy
+      Copiar
     </button>
   );
 
@@ -331,7 +333,7 @@ export default function Home() {
         e.preventDefault();
         const urlInput = document.getElementById("url") as HTMLInputElement;
         urlInput?.focus();
-        showNotification("Focused on URL input");
+        showNotification("Foco en la entrada de URL");
       }
 
       // Enter key to submit form (when input is focused)
@@ -366,11 +368,11 @@ export default function Home() {
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-lg text-gray-800">
-              A/B Test Subject Line 1
+              Línea de Asunto de Prueba A/B 1
             </h3>
             <CopyButton
               content={fields.subjectLine1}
-              fieldName="Subject Line 1"
+              fieldName="Línea de Asunto 1"
             />
           </div>
           <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -382,11 +384,11 @@ export default function Home() {
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-lg text-gray-800">
-              A/B Test Subject Line 2
+              Línea de Asunto de Prueba A/B 2
             </h3>
             <CopyButton
               content={fields.subjectLine2}
-              fieldName="Subject Line 2"
+              fieldName="Línea de Asunto 2"
             />
           </div>
           <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -397,8 +399,13 @@ export default function Home() {
         {/* Preview Text */}
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-lg text-gray-800">Preview Text</h3>
-            <CopyButton content={fields.previewText} fieldName="Preview Text" />
+            <h3 className="font-bold text-lg text-gray-800">
+              Texto de Vista Previa
+            </h3>
+            <CopyButton
+              content={fields.previewText}
+              fieldName="Texto de Vista Previa"
+            />
           </div>
           <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
             {fields.previewText}
@@ -408,8 +415,13 @@ export default function Home() {
         {/* Email Body */}
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-lg text-gray-800">Email Body</h3>
-            <CopyButton content={fields.emailBody} fieldName="Email Body" />
+            <h3 className="font-bold text-lg text-gray-800">
+              Cuerpo del Correo
+            </h3>
+            <CopyButton
+              content={fields.emailBody}
+              fieldName="Cuerpo del Correo"
+            />
           </div>
           <div className="text-gray-700 bg-gray-50 p-3 rounded-lg whitespace-pre-wrap">
             {fields.emailBody}
@@ -420,11 +432,11 @@ export default function Home() {
         <div className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-bold text-lg text-gray-800">
-              Call-to-Action Button Text
+              Texto del Botón de Llamada a la Acción
             </h3>
             <CopyButton
               content={fields.ctaButton}
-              fieldName="CTA Button Text"
+              fieldName="Texto del Botón de Llamada a la Acción"
             />
           </div>
           <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -435,10 +447,12 @@ export default function Home() {
         {/* Image Concept */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-lg text-gray-800">Image Concept</h3>
+            <h3 className="font-bold text-lg text-gray-800">
+              Concepto de Imagen
+            </h3>
             <CopyButton
               content={fields.imageConcept}
-              fieldName="Image Concept"
+              fieldName="Concepto de Imagen"
             />
           </div>
           <div className="text-gray-700 bg-gray-50 p-3 rounded-lg">
@@ -454,23 +468,23 @@ export default function Home() {
           !fields.ctaButton) && (
           <div className="border border-yellow-200 bg-yellow-50 p-4 rounded-lg">
             <h3 className="font-bold text-lg text-yellow-800 mb-2">
-              Parsing Debug Information
+              Información de Depuración de Análisis
             </h3>
             <div className="text-yellow-700 text-sm mb-2">
               <p>
-                Missing fields:{" "}
+                Campos faltantes:{" "}
                 {[
-                  !fields.subjectLine1 && "Subject Line 1",
-                  !fields.subjectLine2 && "Subject Line 2",
-                  !fields.previewText && "Preview Text",
-                  !fields.emailBody && "Email Body",
-                  !fields.ctaButton && "CTA Button",
-                  !fields.imageConcept && "Image Concept",
+                  !fields.subjectLine1 && "Línea de Asunto 1",
+                  !fields.subjectLine2 && "Línea de Asunto 2",
+                  !fields.previewText && "Texto de Vista Previa",
+                  !fields.emailBody && "Cuerpo del Correo",
+                  !fields.ctaButton && "Botón de Llamada a la Acción",
+                  !fields.imageConcept && "Concepto de Imagen",
                 ]
                   .filter(Boolean)
                   .join(", ")}
               </p>
-              <p className="mt-2">Raw AI output:</p>
+              <p className="mt-2">Salida de IA sin procesar:</p>
             </div>
             <div className="text-gray-700 whitespace-pre-wrap text-sm bg-white p-2 rounded border max-h-40 overflow-y-auto">
               {text}
@@ -487,11 +501,11 @@ export default function Home() {
           !fields.imageConcept && (
             <div className="border border-red-200 bg-red-50 p-4 rounded-lg">
               <h3 className="font-bold text-lg text-red-800 mb-2">
-                Complete Parsing Failure
+                Fallo Completo en el Análisis
               </h3>
               <p className="text-red-700 text-sm mb-2">
-                Unable to parse any fields from the AI output. Please check the
-                format.
+                No se pudieron analizar campos de la salida de la IA. Por favor,
+                verifica el formato.
               </p>
               <div className="text-gray-700 whitespace-pre-wrap text-sm bg-white p-2 rounded border max-h-40 overflow-y-auto">
                 {text}
@@ -506,7 +520,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true);
     setResponse("");
-    setProgress("Initializing AI model...");
+    setProgress("Inicializando modelo de IA...");
 
     try {
       const res = await fetch("/api/generate", {
@@ -519,7 +533,7 @@ export default function Home() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        let errorMessage = "Failed to generate content";
+        let errorMessage = "Falló la generación de contenido";
 
         if (errorData.error) {
           errorMessage = errorData.error;
@@ -528,12 +542,13 @@ export default function Home() {
         // Add specific error guidance based on status code
         if (res.status === 401) {
           errorMessage +=
-            "\n\nPlease check your Gemini API key in the environment variables.";
+            "\n\nPor favor, verifica tu clave de API de Gemini en las variables de entorno.";
         } else if (res.status === 429) {
-          errorMessage += "\n\nAPI quota exceeded. Please try again later.";
+          errorMessage +=
+            "\n\nCuota de API excedida. Por favor, inténtalo de nuevo más tarde.";
         } else if (res.status === 503) {
           errorMessage +=
-            "\n\nNetwork connectivity issue. Please check your internet connection.";
+            "\n\nProblema de conectividad de red. Por favor, verifica tu conexión a internet.";
         }
 
         throw new Error(errorMessage);
@@ -544,15 +559,15 @@ export default function Home() {
       if (!reader) {
         // Fallback for non-streaming response
         const data = await res.json();
-        setResponse(data.content || data.error || "Unknown error");
-        setProgress("Complete!");
+        setResponse(data.content || data.error || "Error desconocido");
+        setProgress("¡Completado!");
         return;
       }
 
       const decoder = new TextDecoder();
       let result = "";
 
-      setProgress("Analyzing URL and generating content...");
+      setProgress("Analizando URL y generando contenido...");
 
       while (true) {
         const { done, value } = await reader.read();
@@ -574,17 +589,17 @@ export default function Home() {
               }
               if (data.done) {
                 setProgress(
-                  "Email content generated! Starting image generation..."
+                  "¡Contenido del correo generado! Iniciando generación de imagen..."
                 );
                 const fields = parseEmailFields(result);
                 if (fields.imageConcept) {
                   await handleImageGeneration(fields.imageConcept);
                 } else {
                   setImageProgress(
-                    "Could not find image concept in the email content."
+                    "No se pudo encontrar el concepto de la imagen en el contenido del correo."
                   );
                 }
-                setProgress("Complete!");
+                setProgress("¡Completado!");
               }
               if (data.error) {
                 let errorMessage = data.error;
@@ -592,17 +607,17 @@ export default function Home() {
                 // Add helpful guidance for common errors
                 if (errorMessage.includes("API key")) {
                   errorMessage +=
-                    "\n\n🔧 To fix this:\n1. Get your API key from https://makersuite.google.com/app/apikey\n2. Add it to your .env.local file as GEMINI_API_KEY=your_key_here\n3. Restart the development server";
+                    "\n\n🔧 Para solucionarlo:\n1. Obtén tu clave de API de https://makersuite.google.com/app/apikey\n2. Añádela a tu archivo .env.local como GEMINI_API_KEY=tu_clave_aqui\n3. Reinicia el servidor de desarrollo";
                 } else if (errorMessage.includes("quota")) {
                   errorMessage +=
-                    "\n\n⏰ The API quota has been exceeded. Please try again later or check your Google Cloud Console for quota limits.";
+                    "\n\n⏰ Se ha excedido la cuota de la API. Por favor, inténtalo de nuevo más tarde o revisa tus límites de cuota en la Google Cloud Console.";
                 } else if (errorMessage.includes("Network error")) {
                   errorMessage +=
-                    "\n\n🌐 Check your internet connection and try again.";
+                    "\n\n🌐 Revisa tu conexión a internet e inténtalo de nuevo.";
                 }
 
                 setResponse(errorMessage);
-                setProgress("Error occurred");
+                setProgress("Ocurrió un error");
                 break;
               }
             } catch {
@@ -613,14 +628,14 @@ export default function Home() {
       }
     } catch (error) {
       console.error("Error:", error);
-      let errorMessage = "An error occurred while processing your request.";
+      let errorMessage = "Ocurrió un error al procesar tu solicitud.";
 
       if (error instanceof Error) {
         errorMessage = error.message;
       }
 
       setResponse(errorMessage);
-      setProgress("Error occurred");
+      setProgress("Ocurrió un error");
     } finally {
       setLoading(false);
     }
@@ -630,7 +645,7 @@ export default function Home() {
   const handleImageGeneration = async (imageConcept: string) => {
     setImageLoading(true);
     setImageUrl("");
-    setImageProgress("Generating image with AI...");
+    setImageProgress("Generando imagen con IA...");
 
     try {
       const res = await fetch("/api/generate-image", {
@@ -643,25 +658,26 @@ export default function Home() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to generate image");
+        throw new Error(errorData.error || "Falló la generación de la imagen");
       }
 
       const data = await res.json();
-      
+
       if (data.imageUrl) {
-        setImageProgress("Image received, preparing for display...");
+        setImageProgress("Imagen recibida, preparando para mostrar...");
         setImageUrl(data.imageUrl);
         // The key on the Image component will handle the re-render
-        setImageProgress("Image displayed successfully!");
+        setImageProgress("¡Imagen mostrada exitosamente!");
       } else {
-        throw new Error("No image URL returned from the API.");
+        throw new Error("La API no devolvió ninguna URL de imagen.");
       }
-
     } catch (error) {
-      console.error("Image generation error:", error);
-      setImageProgress("Error occurred during image generation");
+      console.error("Error en la generación de la imagen:", error);
+      setImageProgress("Ocurrió un error durante la generación de la imagen");
       setNotification(
-        error instanceof Error ? error.message : "Failed to generate image"
+        error instanceof Error
+          ? error.message
+          : "Falló la generación de la imagen"
       );
       setTimeout(() => setNotification(""), 5000);
     } finally {
@@ -684,11 +700,11 @@ export default function Home() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      setNotification("Image downloaded successfully!");
+      setNotification("¡Imagen descargada exitosamente!");
       setTimeout(() => setNotification(""), 3000);
     } catch (error) {
-      console.error("Download error:", error);
-      setNotification("Failed to download image");
+      console.error("Error de descarga:", error);
+      setNotification("Falló la descarga de la imagen");
       setTimeout(() => setNotification(""), 3000);
     }
   };
@@ -708,25 +724,25 @@ export default function Home() {
             EmailGenius - ConvertKIT Email Generator
           </h1>
           <p className="text-gray-600 mb-6">
-            Generate high-converting email campaigns for financial products
-            using AI-powered templates
+            Genera campañas de correo electrónico de alta conversión para
+            productos financieros utilizando plantillas impulsadas por IA
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
             <p className="text-sm text-blue-700">
-              <strong>Keyboard Shortcuts:</strong> Press{" "}
-              <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">⌘K</kbd>{" "}
-              (or{" "}
+              <strong>Atajos de Teclado:</strong> Presiona{" "}
+              <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">⌘K</kbd> (o{" "}
               <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">
                 Ctrl+K
               </kbd>
-              ) to focus on URL input • Press{" "}
+              ) para enfocar en la entrada de URL • Presiona{" "}
               <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">Enter</kbd>{" "}
-              to generate • Use{" "}
+              para generar • Usa{" "}
               <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">Tab</kbd>{" "}
-              to navigate • Select any text and click copy button or use{" "}
-              <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">⌘C</kbd> to
-              copy selected text
+              para navegar • Selecciona cualquier texto y haz clic en el botón
+              de copiar o usa{" "}
+              <kbd className="bg-blue-100 px-2 py-1 rounded text-xs">⌘C</kbd>{" "}
+              para copiar el texto seleccionado
             </p>
           </div>
 
@@ -747,24 +763,27 @@ export default function Home() {
               </svg>
               <div>
                 <h4 className="font-bold text-orange-800 mb-2">
-                  ConvertKIT Integration Guide
+                  Guía de Integración de ConvertKIT
                 </h4>
                 <p className="text-sm text-orange-700 mb-2">
-                  When pasting content into ConvertKIT, you may see a dialog
-                  asking &ldquo;Format as Markdown?&rdquo;:
+                  Al pegar contenido en ConvertKIT, es posible que veas un
+                  diálogo preguntando &ldquo;Format as Markdown?&rdquo;:
                 </p>
                 <ul className="text-sm text-orange-700 list-disc list-inside space-y-1">
                   <li>
-                    <strong>Always click &ldquo;Yes, format&rdquo;</strong> to
-                    preserve bold text, formatting, and structure
+                    <strong>
+                      Siempre haz clic en &ldquo;Yes, format&rdquo;
+                    </strong>{" "}
+                    para conservar el texto en negrita, el formato y la
+                    estructura
                   </li>
                   <li>
-                    Clicking &ldquo;No, paste as usual&rdquo; will remove all
-                    Markdown formatting
+                    Hacer clic en &ldquo;No, paste as usual&rdquo; eliminará
+                    todo el formato Markdown
                   </li>
                   <li>
-                    The content is optimized for ConvertKIT&apos;s Markdown
-                    processor
+                    El contenido está optimizado para el procesador de Markdown
+                    de ConvertKIT
                   </li>
                 </ul>
               </div>
@@ -777,7 +796,7 @@ export default function Home() {
                 htmlFor="url"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Product URL
+                URL del Producto
               </label>
               <input
                 type="url"
@@ -798,8 +817,8 @@ export default function Home() {
               tabIndex={2}
             >
               {loading || imageLoading
-                ? "Generating..."
-                : "Generate Email & Image"}
+                ? "Generando..."
+                : "Generar Correo e Imagen"}
             </button>
 
             {(loading || progress) && (
@@ -834,14 +853,14 @@ export default function Home() {
                 />
               </svg>
               <h3 className="text-lg font-semibold text-purple-800">
-                AI Image Generation
+                Generación de Imágenes con IA
               </h3>
             </div>
 
             <p className="text-sm text-purple-700 mb-4">
-              The image will be generated automatically after the email content
-              is created, using the &lsquo;Image Concept&rsquo; from the
-              generated text.
+              La imagen se generará automáticamente después de crear el
+              contenido del correo, utilizando el &lsquo;Concepto de
+              Imagen&rsquo; del texto generado.
             </p>
 
             {(imageLoading || imageProgress) && (
@@ -862,13 +881,13 @@ export default function Home() {
               <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-purple-200">
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="font-semibold text-purple-800">
-                    Generated Image
+                    Imagen Generada
                   </h4>
                   <button
                     onClick={downloadImage}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
                   >
-                    Download Image
+                    Descargar Imagen
                   </button>
                 </div>
                 <Image
@@ -887,24 +906,24 @@ export default function Home() {
             <div className="mt-6">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold text-gray-800">
-                  Generated ConvertKIT Email Campaign:
+                  Campaña de Correo Electrónico de ConvertKIT Generada:
                 </h2>
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={clearAllData}
                     className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
                     tabIndex={3}
-                    title="Clear all generated content and input fields"
+                    title="Borrar todo el contenido generado y los campos de entrada"
                   >
-                    Clear
+                    Borrar
                   </button>
                   <button
                     onClick={copyToClipboard}
                     className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
                     tabIndex={4}
-                    title="Copy selected text or full content with Markdown formatting"
+                    title="Copiar texto seleccionado o contenido completo con formato Markdown"
                   >
-                    Copy All
+                    Copiar Todo
                   </button>
                 </div>
               </div>

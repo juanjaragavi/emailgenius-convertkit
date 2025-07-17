@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EmailGenius - ConvertKIT Email Generator",
-  description: "Generate high-converting email campaigns with ease.",
+  description:
+    "Genera campañas de correo electrónico de alta conversión con facilidad.",
 };
 
 export default function RootLayout({
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
