@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [url, setUrl] = useState("");
@@ -8,6 +9,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState("");
   const [notification, setNotification] = useState("");
+
+  // Image generation state
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageProgress, setImageProgress] = useState("");
 
   // Clear all data with confirmation
   const clearAllData = useCallback(() => {
@@ -19,6 +25,8 @@ export default function Home() {
       setUrl("");
       setResponse("");
       setProgress("");
+      setImageUrl("");
+      setImageProgress("");
       setNotification("All data cleared successfully!");
 
       // Clear the notification after 3 seconds
@@ -565,6 +573,17 @@ export default function Home() {
                 setProgress(data.progress);
               }
               if (data.done) {
+                setProgress(
+                  "Email content generated! Starting image generation..."
+                );
+                const fields = parseEmailFields(result);
+                if (fields.imageConcept) {
+                  await handleImageGeneration(fields.imageConcept);
+                } else {
+                  setImageProgress(
+                    "Could not find image concept in the email content."
+                  );
+                }
                 setProgress("Complete!");
               }
               if (data.error) {
@@ -604,6 +623,73 @@ export default function Home() {
       setProgress("Error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Image generation handler
+  const handleImageGeneration = async (imageConcept: string) => {
+    setImageLoading(true);
+    setImageUrl("");
+    setImageProgress("Generating image with AI...");
+
+    try {
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageConcept }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to generate image");
+      }
+
+      const data = await res.json();
+      
+      if (data.imageUrl) {
+        setImageProgress("Image received, preparing for display...");
+        setImageUrl(data.imageUrl);
+        // The key on the Image component will handle the re-render
+        setImageProgress("Image displayed successfully!");
+      } else {
+        throw new Error("No image URL returned from the API.");
+      }
+
+    } catch (error) {
+      console.error("Image generation error:", error);
+      setImageProgress("Error occurred during image generation");
+      setNotification(
+        error instanceof Error ? error.message : "Failed to generate image"
+      );
+      setTimeout(() => setNotification(""), 5000);
+    } finally {
+      setImageLoading(false);
+    }
+  };
+
+  // Download image handler
+  const downloadImage = async () => {
+    if (!imageUrl) return;
+
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `generated_image.png`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setNotification("Image downloaded successfully!");
+      setTimeout(() => setNotification(""), 3000);
+    } catch (error) {
+      console.error("Download error:", error);
+      setNotification("Failed to download image");
+      setTimeout(() => setNotification(""), 3000);
     }
   };
 
@@ -707,14 +793,16 @@ export default function Home() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || imageLoading}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors duration-200"
               tabIndex={2}
             >
-              {loading ? "Generating Email..." : "Generate Email Campaign"}
+              {loading || imageLoading
+                ? "Generating..."
+                : "Generate Email & Image"}
             </button>
 
-            {loading && progress && (
+            {(loading || progress) && (
               <div className="mt-4 p-3 bg-blue-50 rounded-md">
                 <div className="text-sm text-blue-700 font-medium">
                   {progress}
@@ -728,6 +816,72 @@ export default function Home() {
               </div>
             )}
           </form>
+
+          {/* Image Generation Section */}
+          <div className="mt-8 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+            <div className="flex items-center mb-4">
+              <svg
+                className="w-6 h-6 text-purple-600 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <h3 className="text-lg font-semibold text-purple-800">
+                AI Image Generation
+              </h3>
+            </div>
+
+            <p className="text-sm text-purple-700 mb-4">
+              The image will be generated automatically after the email content
+              is created, using the &lsquo;Image Concept&rsquo; from the
+              generated text.
+            </p>
+
+            {(imageLoading || imageProgress) && (
+              <div className="mt-4 p-3 bg-purple-100 rounded-md">
+                <div className="text-sm text-purple-800 font-medium">
+                  {imageProgress}
+                </div>
+                <div className="w-full bg-purple-200 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full animate-pulse"
+                    style={{ width: "100%" }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            {imageUrl && (
+              <div className="mt-6 p-4 bg-white rounded-lg shadow-sm border border-purple-200">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-semibold text-purple-800">
+                    Generated Image
+                  </h4>
+                  <button
+                    onClick={downloadImage}
+                    className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                  >
+                    Download Image
+                  </button>
+                </div>
+                <Image
+                  key={imageUrl}
+                  src={imageUrl}
+                  alt={`Generated image for the campaign`}
+                  width={512}
+                  height={512}
+                  className="w-full max-w-2xl mx-auto rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+          </div>
 
           {response && (
             <div className="mt-6">
