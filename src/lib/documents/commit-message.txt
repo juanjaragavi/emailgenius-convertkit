@@ -1,8 +1,6 @@
-feat: Enhanced EmailGenius ConvertKit with improved UI and functionality
+fix: Update deployment configuration and add project guidelines
 
-- Improved email generation with better parsing
-- Added image generation capabilities
-- Enhanced ConvertKIT integration with UTM parameter support
-- Fixed Markdown formatting and copy functionality
-- Added comprehensive error handling and validation
-- Improved user experience with better notifications
+- Updated PM2 process name from 'emailgenius-convertkit' to 'kit-app' in deploy script
+- Added comprehensive project guidelines and coding instructions
+- Included MCP Server tool usage documentation
+- Added push and commit workflow automation guidelines

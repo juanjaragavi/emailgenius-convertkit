@@ -21,8 +21,8 @@ sudo npm ci
 echo "[4/5] Building the EmailGenius ConvertKit application..."
 sudo npm run build
 
-echo "[5/5] Restarting PM2 process 'emailgenius-convertkit'..."
-sudo -u juanjaramillo pm2 restart emailgenius-convertkit
+echo "[5/5] Restarting PM2 process 'kit-app'..."
+sudo -u juanjaramillo pm2 restart kit-app
 
 echo "[6/6] Saving current PM2 process list..."
 sudo -u juanjaramillo pm2 save
