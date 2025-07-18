@@ -845,11 +845,11 @@ export default function Home() {
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={clearAllData}
-                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
                     tabIndex={3}
-                    title="Borrar todo el contenido generado y los campos de entrada"
+                    title="Borrar todo el contenido generado y los campos de entrada y generar un nuevo correo"
                   >
-                    Borrar
+                    Nuevo Correo
                   </button>
                   <button
                     onClick={copyToClipboard}

@@ -270,9 +270,21 @@ export class GeminiService {
         }
       }
 
-      // Now send the new URL
-      console.log("Sending final URL:", url);
-      return await this.sendMessage(url);
+      // Determine the target language based on the URL
+      let languageInstruction = "";
+      if (url.includes("us.topfinanzas.com")) {
+        languageInstruction = "Generate the content in English for this URL: ";
+      } else if (url.includes("topfinanzas.com/mx")) {
+        languageInstruction = "Generate the content in Spanish for this URL: ";
+      } else {
+        // Default to English if the domain is not explicitly US or MX
+        languageInstruction = "Generate the content in English for this URL: ";
+      }
+
+      // Now send the new URL with the explicit language instruction
+      const finalMessage = languageInstruction + url;
+      console.log("Sending final message to Gemini:", finalMessage);
+      return await this.sendMessage(finalMessage);
     } catch (error) {
       console.error("Error in generateContent:", error);
       throw error; // Re-throw to preserve the specific error message
