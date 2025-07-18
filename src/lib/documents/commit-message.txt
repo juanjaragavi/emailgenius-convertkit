@@ -1,6 +1,5 @@
-fix: Update deployment configuration and add project guidelines
+fix: Simplify PM2 commands in deployment script
 
-- Updated PM2 process name from 'emailgenius-convertkit' to 'kit-app' in deploy script
-- Added comprehensive project guidelines and coding instructions
-- Included MCP Server tool usage documentation
-- Added push and commit workflow automation guidelines
+- Removed user specification (-u juanjaramillo) from PM2 restart and save commands
+- Streamlined deployment process by using direct sudo PM2 commands
+- Improved compatibility and reduced potential permission issues

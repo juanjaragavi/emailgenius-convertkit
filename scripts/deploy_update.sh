@@ -22,10 +22,10 @@ echo "[4/5] Building the EmailGenius ConvertKit application..."
 sudo npm run build
 
 echo "[5/5] Restarting PM2 process 'kit-app'..."
-sudo -u juanjaramillo pm2 restart kit-app
+sudo pm2 restart kit-app
 
 echo "[6/6] Saving current PM2 process list..."
-sudo -u juanjaramillo pm2 save
+sudo pm2 save
 
 # Note: 'sudo pm2 startup' is typically a one-time setup command
 # to ensure pm2 resurrects processes on server reboot.
