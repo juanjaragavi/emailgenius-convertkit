@@ -62,13 +62,13 @@ export default function Home() {
           }
         }
 
-        // Generate UTM parameters
+        // Generate UTM parameters in the desired order
         const utmParams = new URLSearchParams({
-          utm_source: "convertkit",
+          utm_campaign: `${campaignPrefix}_${campaignIdValue}`,
           utm_medium: "email",
+          utm_source: "convertkit",
           utm_term: "broadcast",
           utm_content: "boton_1",
-          utm_campaign: `${campaignPrefix}_${campaignIdValue}`,
         });
 
         // Append UTM parameters to the original URL
@@ -1005,7 +1005,7 @@ export default function Home() {
                     tabIndex={4}
                     title="Borrar todo el contenido generado y los campos de entrada y generar un nuevo correo"
                   >
-                    Nuevo Correo
+                    Generar Correo Nuevo
                   </button>
                   <button
                     onClick={copyToClipboard}

@@ -1,0 +1,8 @@
+feat: Enhanced EmailGenius ConvertKit with improved UI and functionality
+
+- Improved email generation with better parsing
+- Added image generation capabilities
+- Enhanced ConvertKIT integration with UTM parameter support
+- Fixed Markdown formatting and copy functionality
+- Added comprehensive error handling and validation
+- Improved user experience with better notifications

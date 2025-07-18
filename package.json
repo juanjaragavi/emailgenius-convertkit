@@ -6,7 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "utils": "./scripts/utils.sh",
+    "status": "./scripts/utils.sh status",
+    "setup": "./scripts/utils.sh setup",
+    "clean": "./scripts/utils.sh clean",
+    "workflow": "./scripts/git-workflow.sh",
+    "sync": "./scripts/sync-branches.sh",
+    "app-control": "./scripts/app-control.sh"
   },
   "dependencies": {
     "@google/genai": "^1.9.0",
