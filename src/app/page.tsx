@@ -5,6 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   const [url, setUrl] = useState("");
+  const [campaignId, setCampaignId] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState("");
@@ -23,6 +24,7 @@ export default function Home() {
 
     if (confirmed) {
       setUrl("");
+      setCampaignId("");
       setResponse("");
       setProgress("");
       setImageUrl("");
@@ -32,6 +34,69 @@ export default function Home() {
       // Clear the notification after 3 seconds
       setTimeout(() => setNotification(""), 3000);
     }
+  }, []);
+
+  // UTM parameter generation function
+  const generateTargetUrl = useCallback(
+    (productUrl: string, campaignIdValue: string) => {
+      if (!productUrl || !campaignIdValue) return "";
+
+      try {
+        const url = new URL(productUrl);
+
+        // Determine campaign prefix based on URL
+        let campaignPrefix = "";
+        if (url.hostname.includes("us.topfinanzas.com")) {
+          campaignPrefix = "us_tc_bc";
+        } else if (
+          url.hostname.includes("topfinanzas.com") &&
+          url.pathname.includes("/mx/")
+        ) {
+          campaignPrefix = "mx_tc_bc";
+        } else {
+          // Default fallback - try to detect from hostname
+          if (url.hostname.includes(".mx") || url.pathname.includes("/mx")) {
+            campaignPrefix = "mx_tc_bc";
+          } else {
+            campaignPrefix = "us_tc_bc"; // Default to US
+          }
+        }
+
+        // Generate UTM parameters
+        const utmParams = new URLSearchParams({
+          utm_source: "convertkit",
+          utm_medium: "email",
+          utm_term: "broadcast",
+          utm_content: "boton_1",
+          utm_campaign: `${campaignPrefix}_${campaignIdValue}`,
+        });
+
+        // Append UTM parameters to the original URL
+        const separator = url.search ? "&" : "?";
+        return `${productUrl}${separator}${utmParams.toString()}`;
+      } catch (error) {
+        console.error("Error generating target URL:", error);
+        return productUrl; // Return original URL if there's an error
+      }
+    },
+    []
+  );
+
+  // Validate campaign ID
+  const validateCampaignId = useCallback((id: string) => {
+    if (!id)
+      return { isValid: false, message: "El ID de campaña es requerido" };
+    if (!/^\d+$/.test(id))
+      return {
+        isValid: false,
+        message: "El ID de campaña debe contener solo números",
+      };
+    if (id.length < 1 || id.length > 10)
+      return {
+        isValid: false,
+        message: "El ID de campaña debe tener entre 1 y 10 dígitos",
+      };
+    return { isValid: true, message: "" };
   }, []);
 
   const copyToClipboard = useCallback(async () => {
@@ -193,101 +258,110 @@ export default function Home() {
   );
 
   // Parse response to extract individual fields with Markdown preservation
-  const parseEmailFields = useCallback((text: string) => {
-    const fields = {
-      subjectLine1: "",
-      subjectLine2: "",
-      previewText: "",
-      emailBody: "",
-      ctaButton: "",
-      imageConcept: "",
-    };
+  const parseEmailFields = useCallback(
+    (text: string) => {
+      const fields = {
+        subjectLine1: "",
+        subjectLine2: "",
+        previewText: "",
+        emailBody: "",
+        ctaButton: "",
+        imageConcept: "",
+        targetUrl: "",
+      };
 
-    // Try multiple patterns for more flexible parsing
-    const patterns = {
-      subjectLine1: [
-        /\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
-        /(?:^|\n)1\.\s*\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
-        /Invitation:\s*(.+)/,
-        /Subject\s*Line\s*1[:\s]*(.+)/i,
-      ],
-      subjectLine2: [
-        /\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
-        /(?:^|\n)2\.\s*\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
-        /Priority\s*Notification:\s*(.+)/,
-        /Subject\s*Line\s*2[:\s]*(.+)/i,
-      ],
-      previewText: [
-        /\*\*Preview Text:\*\*\s*(.+)/,
-        /(?:^|\n)3\.\s*\*\*Preview Text:\*\*\s*(.+)/,
-        /Preview\s*Text:\s*(.+)/,
-      ],
-      emailBody: [
-        /\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
-        /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
-        /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n(?:5\.|.*Call-to-Action))/,
-        /Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[,\s]*([\s\S]*?)(?=\nCall-to-Action Button Text:)/,
-        /(Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[\s\S]*?)(?=\nCall-to-Action Button Text:)/,
-      ],
-      ctaButton: [
-        /\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
-        /(?:^|\n)5\.\s*\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
-        /Call-to-Action\s*Button\s*Text:\s*(.+)/,
-      ],
-      imageConcept: [
-        /\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
-        /(?:^|\n)6\.\s*\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
-        /Image\s*Concept:\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
-      ],
-    };
+      // Generate target URL with UTM parameters if campaign ID is provided
+      if (url && campaignId) {
+        fields.targetUrl = generateTargetUrl(url, campaignId);
+      }
 
-    // Try each pattern for each field
-    for (const [fieldName, fieldPatterns] of Object.entries(patterns)) {
-      for (const pattern of fieldPatterns) {
-        const match = text.match(pattern);
-        if (match) {
-          const content = match[1].trim();
-          if (content) {
-            if (fieldName === "emailBody" || fieldName === "imageConcept") {
-              // Preserve internal formatting but clean up leading/trailing whitespace
-              fields[fieldName as keyof typeof fields] = content
-                .replace(/^\s*\n|\n\s*$/g, "")
-                .trim();
-            } else {
-              fields[fieldName as keyof typeof fields] = content;
+      // Try multiple patterns for more flexible parsing
+      const patterns = {
+        subjectLine1: [
+          /\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
+          /(?:^|\n)1\.\s*\*\*A\/B Test Subject Line 1:\*\*\s*(.+)/,
+          /Invitation:\s*(.+)/,
+          /Subject\s*Line\s*1[:\s]*(.+)/i,
+        ],
+        subjectLine2: [
+          /\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
+          /(?:^|\n)2\.\s*\*\*A\/B Test Subject Line 2:\*\*\s*(.+)/,
+          /Priority\s*Notification:\s*(.+)/,
+          /Subject\s*Line\s*2[:\s]*(.+)/i,
+        ],
+        previewText: [
+          /\*\*Preview Text:\*\*\s*(.+)/,
+          /(?:^|\n)3\.\s*\*\*Preview Text:\*\*\s*(.+)/,
+          /Preview\s*Text:\s*(.+)/,
+        ],
+        emailBody: [
+          /\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
+          /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n\*\*Call-to-Action Button Text:\*\*)/,
+          /(?:^|\n)4\.\s*\*\*Email Body:\*\*\s*([\s\S]*?)(?=\n(?:5\.|.*Call-to-Action))/,
+          /Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[,\s]*([\s\S]*?)(?=\nCall-to-Action Button Text:)/,
+          /(Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[\s\S]*?)(?=\nCall-to-Action Button Text:)/,
+        ],
+        ctaButton: [
+          /\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
+          /(?:^|\n)5\.\s*\*\*Call-to-Action Button Text:\*\*\s*(.+)/,
+          /Call-to-Action\s*Button\s*Text:\s*(.+)/,
+        ],
+        imageConcept: [
+          /\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
+          /(?:^|\n)6\.\s*\*\*Image Concept:\*\*\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
+          /Image\s*Concept:\s*([\s\S]*?)(?=\n\n|\n\*\*|$)/,
+        ],
+      };
+
+      // Try each pattern for each field
+      for (const [fieldName, fieldPatterns] of Object.entries(patterns)) {
+        for (const pattern of fieldPatterns) {
+          const match = text.match(pattern);
+          if (match) {
+            const content = match[1].trim();
+            if (content) {
+              if (fieldName === "emailBody" || fieldName === "imageConcept") {
+                // Preserve internal formatting but clean up leading/trailing whitespace
+                fields[fieldName as keyof typeof fields] = content
+                  .replace(/^\s*\n|\n\s*$/g, "")
+                  .trim();
+              } else {
+                fields[fieldName as keyof typeof fields] = content;
+              }
+              break; // Found a match, move to next field
             }
-            break; // Found a match, move to next field
           }
         }
       }
-    }
 
-    // If email body is still empty, try to extract from Hi {{ subscriber.first_name }} to CTA
-    if (!fields.emailBody) {
-      const emailBodyFallback = text.match(
-        /(Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[\s\S]*?)(?=\nCall-to-Action Button Text:|$)/
-      );
-      if (emailBodyFallback) {
-        fields.emailBody = emailBodyFallback[1]
-          .replace(/^\s*\n|\n\s*$/g, "")
-          .trim();
+      // If email body is still empty, try to extract from Hi {{ subscriber.first_name }} to CTA
+      if (!fields.emailBody) {
+        const emailBodyFallback = text.match(
+          /(Hi\s*\{\{\s*subscriber\.first_name\s*\}\}[\s\S]*?)(?=\nCall-to-Action Button Text:|$)/
+        );
+        if (emailBodyFallback) {
+          fields.emailBody = emailBodyFallback[1]
+            .replace(/^\s*\n|\n\s*$/g, "")
+            .trim();
+        }
       }
-    }
 
-    // If still no email body, try to extract everything between Preview Text and Call-to-Action
-    if (!fields.emailBody) {
-      const emailBodyFallback2 = text.match(
-        /Preview Text:.*?\n\n([\s\S]*?)(?=\nCall-to-Action Button Text:|$)/
-      );
-      if (emailBodyFallback2) {
-        fields.emailBody = emailBodyFallback2[1]
-          .replace(/^\s*\n|\n\s*$/g, "")
-          .trim();
+      // If still no email body, try to extract everything between Preview Text and Call-to-Action
+      if (!fields.emailBody) {
+        const emailBodyFallback2 = text.match(
+          /Preview Text:.*?\n\n([\s\S]*?)(?=\nCall-to-Action Button Text:|$)/
+        );
+        if (emailBodyFallback2) {
+          fields.emailBody = emailBodyFallback2[1]
+            .replace(/^\s*\n|\n\s*$/g, "")
+            .trim();
+        }
       }
-    }
 
-    return fields;
-  }, []);
+      return fields;
+    },
+    [url, campaignId, generateTargetUrl]
+  );
 
   // Copy button component with ConvertKIT integration guidance and validation
   const CopyButton = ({
@@ -337,9 +411,13 @@ export default function Home() {
       }
 
       // Enter key to submit form (when input is focused)
-      if (e.key === "Enter" && e.target === document.getElementById("url")) {
+      if (
+        e.key === "Enter" &&
+        (e.target === document.getElementById("url") ||
+          e.target === document.getElementById("campaignId"))
+      ) {
         e.preventDefault();
-        if (!loading && url.trim()) {
+        if (!loading && url.trim() && campaignId.trim()) {
           const form = document.querySelector("form");
           if (form) {
             const submitEvent = new Event("submit", {
@@ -354,7 +432,7 @@ export default function Home() {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [loading, url, showNotification]);
+  }, [loading, url, campaignId, showNotification]);
 
   const renderEmailFields = (text: string) => {
     // Debug the parsing for troubleshooting
@@ -444,6 +522,47 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Target URL with UTM Parameters */}
+        {fields.targetUrl && (
+          <div className="border-b border-gray-200 pb-4">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-lg text-gray-800">
+                URL de Destino con Parámetros UTM
+              </h3>
+              <CopyButton
+                content={fields.targetUrl}
+                fieldName="URL de Destino"
+              />
+            </div>
+            <div className="bg-green-50 border border-green-200 p-3 rounded-lg">
+              <p className="text-sm text-green-700 font-medium mb-2">
+                ✅ URL generada automáticamente con parámetros UTM para análisis
+                de campaña
+              </p>
+              <div className="text-gray-700 bg-white p-2 rounded border text-sm break-all">
+                {fields.targetUrl}
+              </div>
+              <div className="mt-2 text-xs text-green-600">
+                <strong>Parámetros UTM incluidos:</strong>
+                <ul className="mt-1 ml-4 space-y-1">
+                  <li>• utm_source: convertkit</li>
+                  <li>• utm_medium: email</li>
+                  <li>• utm_term: broadcast</li>
+                  <li>• utm_content: boton_1</li>
+                  <li>
+                    • utm_campaign:{" "}
+                    {campaignId
+                      ? url.includes("us.topfinanzas.com")
+                        ? `us_tc_bc_${campaignId}`
+                        : `mx_tc_bc_${campaignId}`
+                      : "N/A"}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Image Concept */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -518,6 +637,15 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate campaign ID before proceeding
+    const campaignValidation = validateCampaignId(campaignId);
+    if (!campaignValidation.isValid) {
+      setNotification(campaignValidation.message);
+      setTimeout(() => setNotification(""), 4000);
+      return;
+    }
+
     setLoading(true);
     setResponse("");
     setProgress("Inicializando modelo de IA...");
@@ -810,11 +938,39 @@ export default function Home() {
               />
             </div>
 
+            <div>
+              <label
+                htmlFor="campaignId"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                ID de Campaña de ConvertKIT
+                <span className="text-xs text-gray-500 ml-1">
+                  (solo números)
+                </span>
+              </label>
+              <input
+                type="text"
+                id="campaignId"
+                value={campaignId}
+                onChange={(e) => setCampaignId(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+                placeholder="123456"
+                pattern="[0-9]+"
+                title="Solo se permiten números"
+                tabIndex={2}
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Introduce el ID numérico de tu campaña de ConvertKIT para
+                generar parámetros UTM automáticamente
+              </p>
+            </div>
+
             <button
               type="submit"
               disabled={loading || imageLoading}
               className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors duration-200"
-              tabIndex={2}
+              tabIndex={3}
             >
               {loading || imageLoading
                 ? "Generando..."
@@ -846,7 +1002,7 @@ export default function Home() {
                   <button
                     onClick={clearAllData}
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm cursor-pointer transition-colors duration-200"
-                    tabIndex={3}
+                    tabIndex={4}
                     title="Borrar todo el contenido generado y los campos de entrada y generar un nuevo correo"
                   >
                     Nuevo Correo
