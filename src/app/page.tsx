@@ -974,7 +974,7 @@ export default function Home() {
             >
               {loading || imageLoading
                 ? "Generando..."
-                : "Generar Correo e Imagen"}
+                : "Generar Broadcast e Imagen"}
             </button>
 
             {(loading || progress) && (
@@ -996,7 +996,7 @@ export default function Home() {
             <div className="mt-6">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold text-gray-800">
-                  BroadCast de ConvertKIT Generado:
+                  Broadcast de ConvertKIT Generado
                 </h2>
                 <div className="flex items-center space-x-2">
                   <button
@@ -1005,7 +1005,7 @@ export default function Home() {
                     tabIndex={4}
                     title="Borrar todo el contenido generado y los campos de entrada y generar un nuevo correo"
                   >
-                    Generar Correo Nuevo
+                    Generar Broadcast Nuevo
                   </button>
                   <button
                     onClick={copyToClipboard}

@@ -9,7 +9,7 @@ applyTo: "**"
 - Consult the documentation located at `src/lib/documents/` for comprehensive documentation standards.
 - Update relevant documentation in `src/lib/documents/DOCUMENTATION.md` when modifying features
 - Keep `README.md` in sync with new capabilities
-- Maintain changelog entries in `/CHANGELOG.md`
+- Maintain changelog entries in `CHANGELOG.md`
 
 ## Code Style & Patterns
 

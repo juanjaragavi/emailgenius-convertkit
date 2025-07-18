@@ -1,5 +1,7 @@
-refactor: Update UI text for better terminology
+refactor: Improve UI consistency with broadcast terminology
 
-- Changed header text from 'Campaña de Correo Electrónico de ConvertKIT Generada' to 'BroadCast de ConvertKIT Generado'
-- Improved terminology to better reflect ConvertKIT's broadcast feature
-- Enhanced user experience with clearer messaging
+- Updated button text from 'Generar Correo e Imagen' to 'Generar Broadcast e Imagen'
+- Changed header text to 'Broadcast de ConvertKIT Generado' (removed colon and 'Cast' capitalization)
+- Updated clear button text from 'Generar Correo Nuevo' to 'Generar Broadcast Nuevo'
+- Fixed instructions.md path reference removing leading slash
+- Enhanced terminology consistency throughout the application
