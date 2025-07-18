@@ -996,7 +996,7 @@ export default function Home() {
             <div className="mt-6">
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold text-gray-800">
-                  Campaña de Correo Electrónico de ConvertKIT Generada:
+                  BroadCast de ConvertKIT Generado:
                 </h2>
                 <div className="flex items-center space-x-2">
                   <button

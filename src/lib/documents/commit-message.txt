@@ -1,5 +1,5 @@
-fix: Simplify PM2 commands in deployment script
+refactor: Update UI text for better terminology
 
-- Removed user specification (-u juanjaramillo) from PM2 restart and save commands
-- Streamlined deployment process by using direct sudo PM2 commands
-- Improved compatibility and reduced potential permission issues
+- Changed header text from 'Campaña de Correo Electrónico de ConvertKIT Generada' to 'BroadCast de ConvertKIT Generado'
+- Improved terminology to better reflect ConvertKIT's broadcast feature
+- Enhanced user experience with clearer messaging
