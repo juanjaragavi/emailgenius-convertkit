@@ -13,7 +13,8 @@
     "clean": "./scripts/utils.sh clean",
     "workflow": "./scripts/git-workflow.sh",
     "sync": "./scripts/sync-branches.sh",
-    "app-control": "./scripts/app-control.sh"
+    "app-control": "./scripts/app-control.sh",
+    "deploy-project": "./scripts/deploy_update.sh"
   },
   "dependencies": {
     "@google/genai": "^1.9.0",

@@ -1,7 +1,10 @@
-refactor: Improve UI consistency with broadcast terminology
+feat: Add bottom navigation and enhance project configuration
 
-- Updated button text from 'Generar Correo e Imagen' to 'Generar Broadcast e Imagen'
-- Changed header text to 'Broadcast de ConvertKIT Generado' (removed colon and 'Cast' capitalization)
-- Updated clear button text from 'Generar Correo Nuevo' to 'Generar Broadcast Nuevo'
-- Fixed instructions.md path reference removing leading slash
-- Enhanced terminology consistency throughout the application
+- Added bottom navigation buttons with smooth scroll functionality
+- Implemented 'Generar Broadcast Nuevo' button for new broadcast generation
+- Added 'Borrar Todo' button for clearing all data and resetting interface
+- Enhanced user experience with confirmation dialogs and notifications
+- Added smooth scroll to top animation for both navigation buttons
+- Added deploy-project script to package.json for easier deployment
+- Created .clinerules directory with project-specific instructions
+- Fixed repository path references in configuration files

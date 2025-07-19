@@ -36,6 +36,58 @@ export default function Home() {
     }
   }, []);
 
+  // Enhanced clear function for bottom navigation
+  const clearAllDataAndScrollToTop = useCallback(() => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer."
+    );
+
+    if (confirmed) {
+      setUrl("");
+      setCampaignId("");
+      setResponse("");
+      setProgress("");
+      setImageUrl("");
+      setImageProgress("");
+      setNotification("¡Todos los datos han sido borrados exitosamente!");
+
+      // Scroll to top with smooth animation
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // Clear the notification after 3 seconds
+      setTimeout(() => setNotification(""), 3000);
+    }
+  }, []);
+
+  // Generate new broadcast and scroll to top
+  const generateNewBroadcastAndScrollToTop = useCallback(() => {
+    const confirmed = window.confirm(
+      "¿Estás seguro de que quieres borrar todos los datos y generar un nuevo broadcast? Esta acción no se puede deshacer."
+    );
+
+    if (confirmed) {
+      setUrl("");
+      setCampaignId("");
+      setResponse("");
+      setProgress("");
+      setImageUrl("");
+      setImageProgress("");
+      setNotification("¡Listo para generar un nuevo broadcast!");
+
+      // Scroll to top with smooth animation
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // Clear the notification after 3 seconds
+      setTimeout(() => setNotification(""), 3000);
+    }
+  }, []);
+
   // UTM parameter generation function
   const generateTargetUrl = useCallback(
     (productUrl: string, campaignIdValue: string) => {
@@ -1089,6 +1141,24 @@ export default function Home() {
                 />
               </div>
             )}
+          </div>
+
+          {/* Bottom Navigation Buttons */}
+          <div className="mt-8 flex justify-center items-center space-x-4">
+            <button
+              onClick={generateNewBroadcastAndScrollToTop}
+              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-sm font-medium cursor-pointer transition-colors duration-200 shadow-lg"
+              title="Borrar todo el contenido y preparar para generar un nuevo broadcast"
+            >
+              Generar Broadcast Nuevo
+            </button>
+            <button
+              onClick={clearAllDataAndScrollToTop}
+              className="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-sm font-medium cursor-pointer transition-colors duration-200 shadow-lg"
+              title="Borrar todo el contenido generado y los campos de entrada"
+            >
+              Borrar Todo
+            </button>
           </div>
         </div>
       </div>
