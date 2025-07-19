@@ -1,10 +1,5 @@
-feat: Add bottom navigation and enhance project configuration
+docs: Update workflow command in project instructions
 
-- Added bottom navigation buttons with smooth scroll functionality
-- Implemented 'Generar Broadcast Nuevo' button for new broadcast generation
-- Added 'Borrar Todo' button for clearing all data and resetting interface
-- Enhanced user experience with confirmation dialogs and notifications
-- Added smooth scroll to top animation for both navigation buttons
-- Added deploy-project script to package.json for easier deployment
-- Created .clinerules directory with project-specific instructions
-- Fixed repository path references in configuration files
+- Changed workflow execution from direct bash script to npm run workflow
+- Updated .clinerules/instructions.md to use standardized npm script
+- Improved consistency in project documentation and workflow commands
