@@ -1,7 +1,3 @@
----
-applyTo: "**"
----
-
 # Project Guidelines
 
 ## Documentation Requirements

@@ -1,5 +1,5 @@
-docs: Update workflow command in project instructions
+refactor: Clean up project guidelines format
 
-- Changed workflow execution from direct bash script to npm run workflow
-- Updated .clinerules/instructions.md to use standardized npm script
-- Improved consistency in project documentation and workflow commands
+- Remove unnecessary YAML frontmatter from .clinerules/instructions.md
+- Streamline document structure for better readability
+- Maintain clean markdown formatting without metadata headers
